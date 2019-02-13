@@ -1,0 +1,20 @@
+{
+    "another": "ok",
+    "lastone": "5",
+    "demo": "test",
+    "test": "anoteher",
+    "api": {
+    "publicapi1": {
+        "endpoint": "https://jsonplaceholder.typicode.com/todos/1"
+    },
+    "publicapi2": { 
+        "src": "Images/Sun.png",
+        "name": "sun1",
+        "hOffset": 250,
+        "vOffset": 250,
+        "alignment": "center"
+    },
+    "publicapi3": {
+        "testelement": "test data"
+    }
+}}    
