@@ -9,7 +9,8 @@ var obj;
 //- Do the request to each api.
 //- Note down the failed ones.
 //- Send and email to [TBD] when at least one failure is detected. 
-// test comment
+
+
 fs.readFile('list.json', 'utf8', function (err, data) {
   if (err) throw err;
   obj = JSON.parse(data);
