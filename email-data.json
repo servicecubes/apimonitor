@@ -1,7 +1,7 @@
 {
     "server": {
         "user": "kollol.nag@gmail.com",
-        "password": "Um4s3n12",
+        "password": "",
         "host": "smtp.gmail.com"  
     },
     "details": {
