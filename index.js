@@ -12,7 +12,12 @@ var email 	= require("emailjs");
 //- Send and email to [TBD] when at least one failure is detected. 
 
 
+//Declaring variables.
 var obj;
+var emailObj;
+var resultArr;
+
+//Reading APIs from the list.json file.
 fs.readFile('list.json', 'utf8', function (err, data) {
   if (err) throw err;
   obj = JSON.parse(data);
@@ -21,6 +26,7 @@ fs.readFile('list.json', 'utf8', function (err, data) {
     return Object.values(obj).length;
 }
 
+//Call APIs
  for(var i = 0; i < length(obj.api); i++){
   axios.post("https://api1.augmedix.com/yubikey/service.php", "otp=ccccccddgtcgjbdgjivbhledcjhcnljkvgcbhbbctunh", {
     headers: {
@@ -30,16 +36,23 @@ fs.readFile('list.json', 'utf8', function (err, data) {
 }).then(response => {
     console.log(response.data.message);
     console.log(response.status);
+    
     if (!response.data.status) {
         console.log('Call failed!');
-      } 
-    });
+      }
+    })
+  
+    // resultArr.push({
+    //   api: "Yubi",
+    //   responsecode: response.code,
+    //   responsemessage: response.message
+    // });    
   }
 });
 
-//Email block starts.
+console.log(resultArr);
 
-var emailObj;
+//Email block starts.
 
 //Reading email data from email-data.json
 fs.readFile('email-data.json', 'utf8', function (err, data) {

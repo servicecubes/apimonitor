@@ -1,13 +1,13 @@
 {
     "server": {
         "user": "kollol.nag@gmail.com",
-        "password": "Um4s3n12",
+        "password": "",
         "host": "smtp.gmail.com"  
     },
     "details": {
         "from": "you <apimonitor@augmedix.com>",
         "to": "Anik <kamrulislam.anik@augmedix.com>",
-        "cc": "Kollol <kollol.nag@gmail.com>",
+        "cc": "Kollol Augmedix <kollol@augmedix.com>",
         "subject": "A sample email from Augmedix API Monitor"
     }    
 }
