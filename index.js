@@ -55,30 +55,30 @@ fs.readFile('list.json', 'utf8', function (err, data) {
 
 .then(console.log(resultArr));
 
-// //Email block starts.
+//Email block starts.
 
-// //Reading email data from email-data.json
-// fs.readFile('email-data.json', 'utf8', function (err, data) {
-//   if (err) throw err;
-//   emailObj = JSON.parse(data);
+//Reading email data from email-data.json
+fs.readFile('email-data.json', 'utf8', function (err, data) {
+  if (err) throw err;
+  emailObj = JSON.parse(data);
 
-// //Initializing the email server
-// var emailServer 	= email.server.connect({
-//   user:    emailObj.server.user, 
-//   password:emailObj.server.password, 
-//   host:    emailObj.server.host, 
-//   ssl:     true
-// });
+//Initializing the email server
+var emailServer 	= email.server.connect({
+  user:    emailObj.server.user, 
+  password:emailObj.server.password, 
+  host:    emailObj.server.host, 
+  ssl:     true
+});
 
-// //Send email report
-// emailServer.send({
-//   text:    "Test Email. Success!", 
-//   from:    emailObj.details.from, 
-//   to:      emailObj.details.to,
-//   cc:      emailObj.details.cc,
-//   subject: emailObj.details.subject
-// }, function(err, message) { console.log(err || message); });
+//Send email report
+emailServer.send({
+  text:    "Test Email. Success!", 
+  from:    emailObj.details.from, 
+  to:      emailObj.details.to,
+  cc:      emailObj.details.cc,
+  subject: emailObj.details.subject
+}, function(err, message) { console.log(err || message); });
 
-//     // .then(response => response.json())
-//     // .then(json => console.log(json))
-//   });
+    // .then(response => response.json())
+    // .then(json => console.log(json))
+  });
