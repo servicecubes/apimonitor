@@ -1,6 +1,7 @@
 const fs = require('fs');
 const axios = require('axios');
-var email 	= require("emailjs");
+const promise = require('promise');
+const email 	= require("emailjs");
 
 
 //Purpose of the app: To monitor 3rd party apis used in Augmedix services.
@@ -15,7 +16,7 @@ var email 	= require("emailjs");
 //Declaring variables.
 var obj;
 var emailObj;
-var resultArr;
+var resultArr = [];
 
 //Reading APIs from the list.json file.
 fs.readFile('list.json', 'utf8', function (err, data) {
@@ -34,48 +35,50 @@ fs.readFile('list.json', 'utf8', function (err, data) {
         "Content-Type": "application/x-www-form-urlencoded"
     }
 }).then(response => {
-    console.log(response.data.message);
-    console.log(response.status);
+  resultArr.push({
+    api: "Yubi",
+    a: 1,
+    b: 2
+//    responsecode: response.code,
+  //  responsemessage: response.message
+  })    
+
+  console.log(response.data.message);
+  console.log(response.status);
     
     if (!response.data.status) {
         console.log('Call failed!');
       }
     })
-  
-    // resultArr.push({
-    //   api: "Yubi",
-    //   responsecode: response.code,
-    //   responsemessage: response.message
-    // });    
   }
-});
+})
 
-console.log(resultArr);
+.then(console.log(resultArr));
 
-//Email block starts.
+// //Email block starts.
 
-//Reading email data from email-data.json
-fs.readFile('email-data.json', 'utf8', function (err, data) {
-  if (err) throw err;
-  emailObj = JSON.parse(data);
+// //Reading email data from email-data.json
+// fs.readFile('email-data.json', 'utf8', function (err, data) {
+//   if (err) throw err;
+//   emailObj = JSON.parse(data);
 
-//Initializing the email server
-var emailServer 	= email.server.connect({
-  user:    emailObj.server.user, 
-  password:emailObj.server.password, 
-  host:    emailObj.server.host, 
-  ssl:     true
-});
+// //Initializing the email server
+// var emailServer 	= email.server.connect({
+//   user:    emailObj.server.user, 
+//   password:emailObj.server.password, 
+//   host:    emailObj.server.host, 
+//   ssl:     true
+// });
 
-//Send email report
-emailServer.send({
-  text:    "Test Email. Success!", 
-  from:    emailObj.details.from, 
-  to:      emailObj.details.to,
-  cc:      emailObj.details.cc,
-  subject: emailObj.details.subject
-}, function(err, message) { console.log(err || message); });
+// //Send email report
+// emailServer.send({
+//   text:    "Test Email. Success!", 
+//   from:    emailObj.details.from, 
+//   to:      emailObj.details.to,
+//   cc:      emailObj.details.cc,
+//   subject: emailObj.details.subject
+// }, function(err, message) { console.log(err || message); });
 
-    // .then(response => response.json())
-    // .then(json => console.log(json))
-  });
+//     // .then(response => response.json())
+//     // .then(json => console.log(json))
+//   });
