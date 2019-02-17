@@ -1,6 +1,6 @@
 const fs = require('fs');
 const axios = require('axios');
-const promise = require('promise');
+let promise = require('promise');
 const email 	= require("emailjs");
 
 
@@ -23,40 +23,31 @@ fs.readFile('list.json', 'utf8', function (err, data) {
   if (err) throw err;
   obj = JSON.parse(data);
   
-  function length(obj) {
-    return Object.values(obj).length;
-}
-
 //Call APIs
- for(var i = 0; i < length(obj.api); i++){
-  axios.post("https://api1.augmedix.com/yubikey/service.php", "otp=ccccccddgtcgjbdgjivbhledcjhcnljkvgcbhbbctunh", {
-    headers: {
-        "Authorization": "8F06168D-A47B-DBE3-7CA3-AA45117B3E26",
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-}).then(response => {
-  resultArr.push({
-    api: "Yubi",
-    a: 1,
-    b: 2
-//    responsecode: response.code,
-  //  responsemessage: response.message
-  })    
-
-  console.log(response.data.message);
-  console.log(response.status);
-    
-    if (!response.data.status) {
-        console.log('Call failed!');
+promise = new Promise(function(reseolve, reject) {
+  for(var i = 0; i < Object.values(obj.api).length; i++){
+    axios.post("https://api1.augmedix.com/yubikey/service.php", "otp=ccccccddgtcgjbdgjivbhledcjhcnljkvgcbhbbctunh", {
+      headers: {
+          "Authorization": "8F06168D-A47B-DBE3-7CA3-AA45117B3E26",
+          "Content-Type": "application/x-www-form-urlencoded"
       }
-    })
-  }
-})
+  }).then(response => {
+    resultArr.push({
+      api: response.data,
+      status: response.status
+        })      
+      })
+    }
+  if(true) {
+    reseolve(resultArr);
+    }
+});
+ 
+promise.then(function(value){
 
-.then(console.log(resultArr));
+  console.log("Dekha jaak ki hoi:" + value);
 
 //Email block starts.
-
 //Reading email data from email-data.json
 fs.readFile('email-data.json', 'utf8', function (err, data) {
   if (err) throw err;
@@ -72,13 +63,18 @@ var emailServer 	= email.server.connect({
 
 //Send email report
 emailServer.send({
-  text:    "Test Email. Success!", 
-  from:    emailObj.details.from, 
-  to:      emailObj.details.to,
-  cc:      emailObj.details.cc,
-  subject: emailObj.details.subject
-}, function(err, message) { console.log(err || message); });
-
-    // .then(response => response.json())
-    // .then(json => console.log(json))
+      text:    value, 
+      from:    emailObj.details.from, 
+      to:      emailObj.details.to,
+      cc:      emailObj.details.cc,
+      subject: emailObj.details.subject
+      }, 
+    function(err, message) { console.log(err || message); 
+    });
   });
+
+promise.catch(function(reason){
+  console.log("Kaaj hoi nai");
+    });
+  });
+});
