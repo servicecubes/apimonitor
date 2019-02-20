@@ -1,80 +1,49 @@
 const fs = require('fs');
 const axios = require('axios');
-let promise = require('promise');
-const email 	= require("emailjs");
+const email = require("emailjs");
 
+let obj = JSON.parse(fs.readFileSync('list.json', 'utf8'));
+let emailConfig = JSON.parse(fs.readFileSync('email-data.json', 'utf8'));
 
-//Purpose of the app: To monitor 3rd party apis used in Augmedix services.
-//This is the MVP version of the application.
-//App Workflow:
-//- Read list of APIs from list.json.
-//- Do the request to each api.
-//- Note down the failed ones.
-//- Send and email to [TBD] when at least one failure is detected. 
+async function requestApi() {
+    var resultArr = [];
 
-
-//Declaring variables.
-var obj;
-var emailObj;
-var resultArr = [];
-
-//Reading APIs from the list.json file.
-fs.readFile('list.json', 'utf8', function (err, data) {
-  if (err) throw err;
-  obj = JSON.parse(data);
-  
-//Call APIs
-promise = new Promise(function(reseolve, reject) {
-  for(var i = 0; i < Object.values(obj.api).length; i++){
-    axios.post("https://api1.augmedix.com/yubikey/service.php", "otp=ccccccddgtcgjbdgjivbhledcjhcnljkvgcbhbbctunh", {
-      headers: {
-          "Authorization": "8F06168D-A47B-DBE3-7CA3-AA45117B3E26",
-          "Content-Type": "application/x-www-form-urlencoded"
-      }
-  }).then(response => {
-    resultArr.push({
-      api: response.data,
-      status: response.status
-        })      
-      })
+    for (var i = 0; i < Object.values(obj.api).length; i++) {
+        let response = await axios.get("http://172.23.101.126:50003/swagger-ui.html#/", {
+            headers: {
+                "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEyMywicmxzIjpbIlNDUklCRSJdLCJleHAiOjI1MTYyMzkwMjJ9.q1_2g-2b4YbEvQXmUK5cAOUOy9O1ExCTCt-Ka8SGVTg",
+            }
+        });
+        resultArr.push({
+            statuscode: response.status
+        })
     }
-  if(true) {
-    reseolve(resultArr);
-    }
-});
- 
-promise.then(function(value){
 
-  console.log("Dekha jaak ki hoi:" + value);
+    return resultArr;
+}
 
-//Email block starts.
-//Reading email data from email-data.json
-fs.readFile('email-data.json', 'utf8', function (err, data) {
-  if (err) throw err;
-  emailObj = JSON.parse(data);
-
-//Initializing the email server
-var emailServer 	= email.server.connect({
-  user:    emailObj.server.user, 
-  password:emailObj.server.password, 
-  host:    emailObj.server.host, 
-  ssl:     true
-});
-
-//Send email report
-emailServer.send({
-      text:    value, 
-      from:    emailObj.details.from, 
-      to:      emailObj.details.to,
-      cc:      emailObj.details.cc,
-      subject: emailObj.details.subject
-      }, 
-    function(err, message) { console.log(err || message); 
+function sendEmail(body) {
+    let emailServer = email.server.connect({
+        user: emailConfig.server.user,
+        password: emailConfig.server.password,
+        host: emailConfig.server.host,
+        ssl: true
     });
-  });
 
-promise.catch(function(reason){
-  console.log("Kaaj hoi nai");
+    emailServer.send({
+        text: body,
+        from: emailConfig.details.from,
+        to: emailConfig.details.to,
+        cc: emailConfig.details.cc,
+        subject: emailConfig.details.subject
     });
-  });
-});
+}
+
+(async () => {
+    let result = await requestApi();
+    sendEmail(JSON.stringify(result));
+    // result
+    //     .map(x => x.statuscode * 2)
+    //     .forEach(sendEmail)
+})();
+
