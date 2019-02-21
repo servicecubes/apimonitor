@@ -10,8 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
-    "emailjs": "^2.2.0",
-    "promise": "^8.0.2",
-    "start": "^5.1.0"
+    "emailjs": "^2.2.0"
   }
 }
