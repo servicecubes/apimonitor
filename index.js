@@ -46,4 +46,3 @@ function sendEmail(body) {
     //     .map(x => x.statuscode * 2)
     //     .forEach(sendEmail)
 })();
-
